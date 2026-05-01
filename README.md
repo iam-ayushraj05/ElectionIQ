@@ -1,16 +1,71 @@
-# React + Vite
+# ElectionIQ 🗳️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ElectionIQ is an AI-powered interactive guide designed to demystify the Indian election process for first-time voters and students. Built with a modern React + Vite frontend, it integrates Google's powerful Gemini AI to provide real-time, accurate, and unbiased answers to any electoral questions.
 
-Currently, two official plugins are available:
+![ElectionIQ AI Guide](public/favicon.svg)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🌟 Key Features
 
-## React Compiler
+*   **AI Assistant:** A voice-enabled Chatbot powered by Google Gemini 2.0 Flash to answer questions ranging from Voter ID registration to EVM functionality.
+*   **Interactive Learning Modules:** 6 step-by-step modules covering the entire election lifecycle.
+*   **Visual Timelines & Charts:** Dynamic representations of the election process, Model Code of Conduct, and historical voting statistics.
+*   **Fully Accessible:** Keyboard navigable with complete ARIA label support for screen readers.
+*   **Highly Optimized:** Utilizes React `Suspense` and `lazy()` for component-level code splitting, ensuring blazing fast load times.
+*   **Secure:** Implements `dompurify` to aggressively sanitize all AI outputs and protect against XSS injections.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Tech Stack
 
-## Expanding the ESLint configuration
+*   **Frontend:** React 19, Vite 8, CSS Modules
+*   **AI Engine:** Google Gemini API (`@google/genai`)
+*   **Cloud Services:** Google Firebase (Analytics/Hosting), Google Cloud Run
+*   **Testing:** Vitest, React Testing Library
+*   **Icons & Animation:** Lucide React, Framer Motion
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Local Development
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/iam-ayushraj05/ElectionIQ.git
+   cd ElectionIQ
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up Environment Variables:**
+   Create a `.env` file in the root directory and add your Gemini API Key:
+   ```env
+   VITE_GEMINI_API_KEY=your_google_gemini_api_key_here
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Run the Test Suite:**
+   ```bash
+   npm run test
+   ```
+
+## ☁️ Deployment (Google Cloud Run)
+
+This project includes a `Dockerfile` and `nginx.conf` fully configured for Google Cloud Run deployment.
+
+To deploy via Google Cloud CLI:
+```bash
+gcloud run deploy electioniq-app \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-build-env-vars="VITE_GEMINI_API_KEY=your_google_gemini_api_key_here"
+```
+
+## 🔒 Security Notes
+* Never commit your `.env` file. It has been strictly ignored in `.gitignore`.
+* The Docker container automatically maps to Cloud Run's dynamically injected `$PORT`.
+
+---
+*Built for PromptWars 2026*
