@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Send, RefreshCw, Mic, MicOff, Radio } from 'lucide-react';
 import { CHAT_SUGGESTIONS, QUICK_MENU } from '../data/electionData';
 import DOMPurify from 'dompurify';
@@ -289,3 +290,10 @@ export default function Chat({ initPrompt, clearInitPrompt }) {
     </div>
   );
 }
+
+Chat.propTypes = {
+  /** Optional initial prompt to send automatically when opened */
+  initPrompt: PropTypes.string,
+  /** Callback to clear the initial prompt after it has been sent */
+  clearInitPrompt: PropTypes.func,
+};

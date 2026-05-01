@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const TURNOUT_DATA = [
   { label: "Youth (18–25)", pct: 65, color: "#22d3ee" },
   { label: "Adults (26–50)", pct: 82, color: "#4ade80" },
@@ -46,6 +48,12 @@ function BarRow({ label, pct, color }) {
   );
 }
 
+BarRow.propTypes = {
+  label: PropTypes.string.isRequired,
+  pct: PropTypes.number.isRequired,
+  color: PropTypes.string.isRequired,
+};
+
 function DonutChart({ data }) {
   const r = 52, cx = 70, cy = 70, stroke = 18;
   const circ = 2 * Math.PI * r;
@@ -80,6 +88,16 @@ function DonutChart({ data }) {
     </div>
   );
 }
+
+DonutChart.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      pct: PropTypes.number.isRequired,
+      color: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
 
 export default function Charts() {
   return (
