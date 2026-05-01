@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { QUICK_FACTS, TIMELINE_STEPS } from '../data/electionData';
 
 const ACTIONS = [
@@ -14,6 +15,14 @@ const UPDATES = [
   { icon: "📱", text: "Voter Helpline App launched for online registration & booth location", time: "2023", color: "var(--purple)" },
 ];
 
+/**
+ * Dashboard Page
+ * Landing page containing quick facts, navigation cards, and learning progress summary.
+ *
+ * @param {Object} props
+ * @param {Function} props.navigate - Function to change the current view
+ * @param {number[]} props.learningProgress - Array representing completed modules
+ */
 export default function Dashboard({ navigate, learningProgress }) {
   const completedCount = learningProgress ? learningProgress.filter(p => p === 1).length : 0;
   return (
@@ -122,3 +131,10 @@ export default function Dashboard({ navigate, learningProgress }) {
     </div>
   );
 }
+
+Dashboard.propTypes = {
+  /** Navigation function to switch between pages */
+  navigate: PropTypes.func.isRequired,
+  /** Array tracking completion status of each learning module (1 = done, 0 = pending) */
+  learningProgress: PropTypes.arrayOf(PropTypes.number).isRequired,
+};

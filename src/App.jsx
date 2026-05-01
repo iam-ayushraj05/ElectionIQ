@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import './index.css';
 import './App.css';
 import {
@@ -6,8 +6,7 @@ import {
   MessageCircle, HelpCircle, Menu, X, Zap, Search,
   Sun, Moon, Bell, Settings, Globe
 } from 'lucide-react';
-
-import { lazy, Suspense } from 'react';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Learn = lazy(() => import('./pages/Learn'));
@@ -25,6 +24,10 @@ const NAV = [
   { id: 'chat', label: 'AI Assistant', icon: <MessageCircle size={16} />, emoji: '🤖' },
 ];
 
+/**
+ * Main Application Component
+ * Handles layout, routing via Suspense, theme toggling, and global state.
+ */
 export default function App() {
   const [page, setPage] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -78,25 +81,29 @@ export default function App() {
           </div>
         </div>
 
-        <nav className="sidebar-nav">
+        <nav className="sidebar-nav" aria-label="Main navigation">
           <div className="sidebar-nav-section">Main Menu</div>
           {NAV.slice(0, 4).map(n => (
             <button
               key={n.id}
               className={`nav-item ${page === n.id ? 'active' : ''}`}
               onClick={() => navigate(n.id)}
+              aria-label={n.label}
+              aria-current={page === n.id ? 'page' : undefined}
             >
               <div className="nav-item-icon">{n.emoji}</div>
               {n.label}
             </button>
           ))}
 
-          <div className="sidebar-nav-section" style={{ marginTop: 8 }}>Data & AI</div>
+          <div className="sidebar-nav-section" style={{ marginTop: 8 }}>Data &amp; AI</div>
           {NAV.slice(4).map(n => (
             <button
               key={n.id}
               className={`nav-item ${page === n.id ? 'active' : ''}`}
               onClick={() => navigate(n.id)}
+              aria-label={n.label}
+              aria-current={page === n.id ? 'page' : undefined}
             >
               <div className="nav-item-icon">{n.emoji}</div>
               {n.label}
@@ -183,14 +190,16 @@ export default function App() {
 
         {/* Page content */}
         <main key={page} className="anim-in" style={{ flex: 1 }} role="main">
-          <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading content...</div>}>
-            {page === 'dashboard' && <Dashboard navigate={navigate} learningProgress={learningProgress} />}
-            {page === 'learn' && <Learn navigate={navigate} learningProgress={learningProgress} setLearningProgress={setLearningProgress} />}
-            {page === 'timeline' && <TimelinePage />}
-            {page === 'faq' && <FAQ />}
-            {page === 'charts' && <Charts />}
-            {page === 'chat' && <Chat initPrompt={chatInitPrompt} clearInitPrompt={() => setChatInitPrompt(null)} />}
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading content...</div>}>
+              {page === 'dashboard' && <Dashboard navigate={navigate} learningProgress={learningProgress} />}
+              {page === 'learn' && <Learn navigate={navigate} learningProgress={learningProgress} setLearningProgress={setLearningProgress} />}
+              {page === 'timeline' && <TimelinePage />}
+              {page === 'faq' && <FAQ />}
+              {page === 'charts' && <Charts />}
+              {page === 'chat' && <Chat initPrompt={chatInitPrompt} clearInitPrompt={() => setChatInitPrompt(null)} />}
+            </Suspense>
+          </ErrorBoundary>
         </main>
 
         <footer className="footer">

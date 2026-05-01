@@ -1,6 +1,16 @@
+import PropTypes from 'prop-types';
 import { LEARN_MODULES } from '../data/faqData';
 import { Clock, ArrowRight } from 'lucide-react';
 
+/**
+ * Learn Page
+ * Displays educational modules and tracks the user's progress.
+ *
+ * @param {Object} props
+ * @param {Function} props.navigate - Function to change the current view
+ * @param {number[]} props.learningProgress - Array representing completed modules
+ * @param {Function} props.setLearningProgress - State setter to update progress
+ */
 export default function Learn({ navigate, learningProgress, setLearningProgress }) {
   const completedCount = learningProgress ? learningProgress.filter(p => p === 1).length : 0;
   
@@ -96,3 +106,12 @@ export default function Learn({ navigate, learningProgress, setLearningProgress 
     </div>
   );
 }
+
+Learn.propTypes = {
+  /** Navigation function to switch between pages */
+  navigate: PropTypes.func.isRequired,
+  /** Array tracking module completion (1 = done, 0 = pending) */
+  learningProgress: PropTypes.arrayOf(PropTypes.number).isRequired,
+  /** Setter to update learningProgress state */
+  setLearningProgress: PropTypes.func.isRequired,
+};
