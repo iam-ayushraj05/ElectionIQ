@@ -32,7 +32,6 @@ describe('Timeline Page', () => {
 
   it('expands step details on click', () => {
     render(<TimelinePage />);
-    const step = screen.getAllByText('Announcement')[0].closest('.tl-item') || screen.getByText('Announcement').closest('div[class*="tl"]');
     fireEvent.click(screen.getByText('Announcement'));
     expect(screen.getByText('MCC begins')).toBeInTheDocument();
   });

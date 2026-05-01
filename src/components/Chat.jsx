@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, RefreshCw, Mic, MicOff, Radio } from 'lucide-react';
 import { CHAT_SUGGESTIONS, QUICK_MENU } from '../data/electionData';
 import DOMPurify from 'dompurify';
@@ -59,7 +59,7 @@ function parseText(text) {
     if (!t) { flush(); return; }
     const html = t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/_(.*?)_/g, '<em>$1</em>');
     if (t.startsWith('- ') || t.startsWith('• ') || /^\d+\.\s/.test(t)) {
-      const clean = html.replace(/^[-•\d+\.]\s*/, '');
+      const clean = html.replace(/^[-•\d+.]\s*/, '');
       listBuf.push(<li key={i} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(clean) }} />);
     } else {
       flush();
@@ -98,7 +98,7 @@ async function callGemini(history, msg, level, country) {
     const data = await res.json();
     if (data.error || !data.candidates) return getMock(msg);
     return data.candidates[0].content.parts[0].text;
-  } catch (err) {
+  } catch {
     return getMock(msg);
   }
 }
@@ -148,18 +148,7 @@ export default function Chat({ initPrompt, clearInitPrompt }) {
     recognition.start();
   };
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [msgs, loading]);
-
-  useEffect(() => {
-    if (initPrompt) {
-      send(initPrompt);
-      clearInitPrompt?.();
-    }
-  }, [initPrompt]);
-
-  const send = async (text) => {
+  const send = useCallback(async (text) => {
     const trimmed = (text || input).trim();
     if (!trimmed || loading) return;
     const userMsg = { id: Date.now(), role: 'user', text: trimmed };
@@ -174,7 +163,20 @@ export default function Chat({ initPrompt, clearInitPrompt }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [input, loading, msgs, level, country]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [msgs, loading]);
+
+  useEffect(() => {
+    if (!initPrompt) return;
+    const timeout = setTimeout(() => {
+      send(initPrompt);
+      clearInitPrompt?.();
+    }, 0);
+    return () => clearTimeout(timeout);
+  }, [initPrompt, send, clearInitPrompt]);
 
   const handleKey = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } };
   const reset = () => setMsgs([WELCOME]);

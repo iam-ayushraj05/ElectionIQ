@@ -49,13 +49,12 @@ function BarRow({ label, pct, color }) {
 function DonutChart({ data }) {
   const r = 52, cx = 70, cy = 70, stroke = 18;
   const circ = 2 * Math.PI * r;
-  let offset = 0;
-  const segments = data.map(d => {
+  const segments = data.reduce((acc, d) => {
+    const offset = acc.length > 0 ? acc[acc.length - 1]._nextOffset : 0;
     const len = (d.pct / 100) * circ;
-    const seg = { ...d, dashArray: `${len} ${circ - len}`, dashOffset: -offset };
-    offset += len;
-    return seg;
-  });
+    acc.push({ ...d, dashArray: `${len} ${circ - len}`, dashOffset: -offset, _nextOffset: offset + len });
+    return acc;
+  }, []);
 
   return (
     <div className="donut-wrapper">

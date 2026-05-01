@@ -62,7 +62,6 @@ export default function App() {
     setSidebarOpen(false);
   };
 
-  const currentNav = NAV.find(n => n.id === page);
 
   return (
     <div className="layout">
